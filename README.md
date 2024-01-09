@@ -6,4 +6,5 @@ Basic JDBC Connection project that does the following functions:
 -   `CREATE TABLE`
 -   `INSERT VALUES`
 -   `UPDATE VALUES`
--   `DELETE VALUES`    
+-   `DELETE VALUES` 
+-   `SELECT ALL VALUES`   
