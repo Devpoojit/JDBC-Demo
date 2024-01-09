@@ -21,13 +21,14 @@ public class JDBCFirst {
 
         while (flag) {
             System.out.println("Whcih operation do you want to perform?");
-            System.out.println("INSERT | UPDATE | DELETE | EXIT");
+            System.out.println("INSERT | UPDATE | DELETE | SELECT | EXIT");
             String operation = scanner.nextLine();
             switch (operation) {
                 case "INSERT":
                 case "insert":
                     System.out.println("Enter id: ");
                     int id = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.println("Enter name: ");
                     String name = scanner.nextLine();
                     System.out.println("Enter course: ");
@@ -39,6 +40,7 @@ public class JDBCFirst {
                 case "update":
                     System.out.println("Enter id: ");
                     int id1 = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.println("Enter new name: ");
                     String name1 = scanner.nextLine();
                     System.out.println("Enter new course: ");
@@ -50,6 +52,10 @@ public class JDBCFirst {
                     System.out.println("Enter id: ");
                     int id2 = scanner.nextInt();
                     student.deleteData(id2);
+                    break;
+                case "SELECT":
+                case "select":
+                    student.selectData(tableName);
                     break;
                 case "EXIT":
                 case "exit":

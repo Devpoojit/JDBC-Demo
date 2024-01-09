@@ -54,21 +54,27 @@ public class Student {
         String userName = "root";
         String password = "dev10912";
         Connection connection = DriverManager.getConnection(url, userName, password);
-        Statement statement = connection.createStatement();
-        String query = "INSERT INTO students VALUES (1, 'John', 'Java')";
-        statement.execute(query);
+        String query = "INSERT INTO students VALUES (?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, i);
+        statement.setString(2, string);
+        statement.setString(3, string2);
+        statement.executeUpdate();
         System.out.println("Data inserted successfully");
         statement.close();
     }
+    
 
     public void updateData(int i, String string, String string2) throws SQLException {
         String url = "jdbc:mysql://localhost:3306/students";
         String userName = "root";
         String password = "dev10912";
         Connection connection = DriverManager.getConnection(url, userName, password);
-        Statement statement = connection.createStatement();
-        String query = "UPDATE students SET course = 'Python' WHERE id = 1";
-        statement.execute(query);
+        String query = "UPDATE students SET name = ?, course = ? WHERE id = " + i;
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, string);
+        statement.setString(2, string2);
+        statement.executeUpdate();
         System.out.println("Data updated successfully");
         statement.close();
     }
@@ -83,6 +89,19 @@ public class Student {
         statement.execute(query);
         System.out.println("Data deleted successfully");
         statement.close();
+    }
+
+    public void selectData(String tableName) throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/students";
+        String userName = "root";
+        String password = "dev10912";
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement = connection.createStatement();
+        String query = "SELECT * FROM " + tableName;
+        ResultSet resultSet = statement.executeQuery(query);        
+        while (resultSet.next()) {
+            System.out.println(resultSet.getInt(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+        }
     }
 
 
@@ -137,6 +156,4 @@ public class Student {
         }
         return false;
     }
-
-
 }
