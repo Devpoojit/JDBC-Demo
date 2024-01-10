@@ -1,6 +1,6 @@
 import java.sql.*;
 
-import apple.laf.JRSUIConstants.State;
+// import apple.laf.JRSUIConstants.State;
 
 public class Student {
 
@@ -10,17 +10,13 @@ public class Student {
      * @throws SQLException
      */
     public void createDatabase (String dbName) throws SQLException {
+        Connection connection = Connect.getConnection(dbName);
         if (!databaseExists(dbName)) {
-            String url = "jdbc:mysql://localhost:3306/";
-            String userName = "root";
-            String password = "dev10912";
-
-            Connection conn = DriverManager.getConnection(url, userName, password);
-            Statement statement = conn.createStatement();
+            Statement statement = connection.createStatement();
             String query = "create database "+dbName;
             statement.execute(query);
             System.out.println("Database created successfully");
-            conn.close();
+            connection.close();
         } else {
             System.out.println("Database already exists");
         }
@@ -32,12 +28,8 @@ public class Student {
      * @param dbName
      * @throws SQLException
      */
-    public void createTable(String dbName, String tableName) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/";
-        String userName = "root";
-        String password = "dev10912";
-
-        Connection connection = DriverManager.getConnection((url + dbName), userName, password);
+    public void createTable(String tableName) throws SQLException {
+        Connection connection = Connect.getConnection();
         if (doesTableExist(connection, tableName)) {
             System.out.println("Table already exists");
             return;
@@ -49,12 +41,9 @@ public class Student {
         connection.close();
     }
 
-    public void insertData(int i, String string, String string2) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/students";
-        String userName = "root";
-        String password = "dev10912";
-        Connection connection = DriverManager.getConnection(url, userName, password);
-        String query = "INSERT INTO students VALUES (?, ?, ?)";
+    public void insertData(int i, String string, String string2, String tableName) throws SQLException {
+        Connection connection = Connect.getConnection();
+        String query = Query.getInsertQuery(tableName);
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, i);
         statement.setString(2, string);
@@ -65,12 +54,9 @@ public class Student {
     }
     
 
-    public void updateData(int i, String string, String string2) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/students";
-        String userName = "root";
-        String password = "dev10912";
-        Connection connection = DriverManager.getConnection(url, userName, password);
-        String query = "UPDATE students SET name = ?, course = ? WHERE id = " + i;
+    public void updateData(int i, String string, String string2, String tableName) throws SQLException {
+        Connection connection = Connect.getConnection();
+        String query = Query.getUpdateQuery(tableName, i);
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, string);
         statement.setString(2, string2);
@@ -79,25 +65,19 @@ public class Student {
         statement.close();
     }
 
-    public void deleteData(int i) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/students";
-        String userName = "root";
-        String password = "dev10912";
-        Connection connection = DriverManager.getConnection(url, userName, password);
+    public void deleteData(int i, String tableName) throws SQLException {
+        Connection connection = Connect.getConnection();
         Statement statement = connection.createStatement();
-        String query = "DELETE FROM students WHERE id = 1";
+        String query = Query.getDeleteQuery(tableName, i);
         statement.execute(query);
         System.out.println("Data deleted successfully");
         statement.close();
     }
 
     public void selectData(String tableName) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/students";
-        String userName = "root";
-        String password = "dev10912";
-        Connection connection = DriverManager.getConnection(url, userName, password);
+        Connection connection = Connect.getConnection();
         Statement statement = connection.createStatement();
-        String query = "SELECT * FROM " + tableName;
+        String query = Query.getSelectQuery(tableName);
         ResultSet resultSet = statement.executeQuery(query);        
         while (resultSet.next()) {
             System.out.println(resultSet.getInt(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
@@ -117,13 +97,9 @@ public class Student {
      * @throws SQLException
      */
     public boolean databaseExists (String dbName) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/";
-        String userName = "root";
-        String password = "dev10912";
+        Connection connection = Connect.getConnection();
 
-        Connection conn = DriverManager.getConnection(url, userName, password);
-
-        DatabaseMetaData meta = conn.getMetaData();
+        DatabaseMetaData meta = connection.getMetaData();
         ResultSet resultSet = meta.getCatalogs();
 
         while (resultSet.next()) {
@@ -133,7 +109,7 @@ public class Student {
             }
         }
         resultSet.close();
-        conn.close();
+        connection.close();
         return false;
     }
 
@@ -144,8 +120,8 @@ public class Student {
      * @return
      * @throws SQLException
      */
-    public boolean doesTableExist(Connection conn, String tableName) throws SQLException {
-        DatabaseMetaData dbmd = conn.getMetaData();
+    public boolean doesTableExist(Connection connection, String tableName) throws SQLException {
+        DatabaseMetaData dbmd = connection.getMetaData();
         try (ResultSet rs = dbmd.getTables(null, null, tableName, null)) {
             while (rs.next()) {
                 String tName = rs.getString("TABLE_NAME");

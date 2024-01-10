@@ -16,7 +16,7 @@ public class JDBCFirst {
         System.out.println("Enter name of table to use or create: ");
         String tableName = scanner.nextLine(); // Get user input for table name
         student.createDatabase(dbName); // Create database
-        student.createTable(dbName, tableName); // Create table
+        student.createTable(tableName); // Create table
         boolean flag = true;
 
         while (flag) {
@@ -33,8 +33,7 @@ public class JDBCFirst {
                     String name = scanner.nextLine();
                     System.out.println("Enter course: ");
                     String course = scanner.nextLine();
-                    student.insertData(id, name, course);
-                    // student.insertData(1, "John", "Java");
+                    student.insertData(id, name, course, tableName);
                     break;
                 case "UPDATE":
                 case "update":
@@ -45,13 +44,13 @@ public class JDBCFirst {
                     String name1 = scanner.nextLine();
                     System.out.println("Enter new course: ");
                     String course1 = scanner.nextLine();
-                    student.updateData(id1, name1, course1);
+                    student.updateData(id1, name1, course1, tableName);
                     break;
                 case "DELETE":
                 case "delete":
                     System.out.println("Enter id: ");
                     int id2 = scanner.nextInt();
-                    student.deleteData(id2);
+                    student.deleteData(id2, tableName);
                     break;
                 case "SELECT":
                 case "select":
